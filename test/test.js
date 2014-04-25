@@ -3,10 +3,6 @@
 describe('ja', function() {
     
     it('toHiragana', function() {
-        assert.equal('ワヲン'.toHiragana(), 'わをん');
-        assert.equal('wawonnn'.toHiragana(), 'わをんん');
-        return ;
-
         // 
         assert.equal('アイウエオ'.toHiragana(), 'あいうえお');
         assert.equal('カキクケコ'.toHiragana(), 'かきくけこ');
@@ -23,15 +19,25 @@ describe('ja', function() {
         assert.equal('aiueo'.toHiragana(), 'あいうえお');
         assert.equal('kakikukeko'.toHiragana(), 'かきくけこ');
         assert.equal('sasisuseso'.toHiragana(), 'さしすせそ');
+
         assert.equal('tatituteto'.toHiragana(), 'たちつてと');
         assert.equal('naninuneno'.toHiragana(), 'なにぬねの');
         assert.equal('hahihuheho'.toHiragana(), 'はひふへほ');
         assert.equal('mamimumemo'.toHiragana(), 'まみむめも');
         assert.equal('yayuyo'.toHiragana(), 'やゆよ');
         assert.equal('rarirurero'.toHiragana(), 'らりるれろ');
-        assert.equal('wawonnn'.toHiragana(), 'わをんん');
 
-        assert.equal('hello, world!'.toHiragana(), 'へllお, をrld!');
+        assert.equal('wawonnn'.toHiragana(), 'わをんん');
+        assert.equal('やnほ'.toHiragana(), 'やんほ');
+        assert.equal('やnnほ'.toHiragana(), 'やんほ');
+        assert.equal('やnnほn'.toHiragana(), 'やんほん');
+        assert.equal('やnnほnn'.toHiragana(), 'やんほん');
+
+        assert.equal('kyakyukyo'.toHiragana(), 'きゃきゅきょ');
+        assert.equal('xtu'.toHiragana(), 'っ');
+
+
+        assert.equal('hello, world!'.toHiragana(), 'へllo, をrld!');
     });
     
     it('toKatakana', function() {
@@ -61,11 +67,14 @@ describe('ja', function() {
         assert.equal('rarirurero'.toKatakana(), 'ラリルレロ');
         assert.equal('wawonnn'.toKatakana(), 'ワヲンン');
 
-        assert.equal('hello, world!'.toKatakana(), 'ヘllオ, ヲrld!');
+        assert.equal('hello, world!'.toKatakana(), 'ヘllo, ヲrld!');
+    });
+
+    it('toDakuten', function() {
+        // TODO: 
     });
 
     it('isDakuten', function() {
-        return ;
         // 
         assert.equal('あいうえお'.isDakuten(), false);
         assert.equal('かきくけこ'.isDakuten(), false);
@@ -74,5 +83,47 @@ describe('ja', function() {
 
         assert.equal('ガギグゲゴ'.isDakuten(), true);
         assert.equal('gagigugego'.isDakuten(), true);
+    });
+
+    it('hasDakuten', function() {
+        // 
+        assert.equal('あいうえお'.hasDakuten(), false);
+        assert.equal('かきくけこ'.hasDakuten(), false);
+        assert.equal('がぎぐげご'.hasDakuten(), true);
+        assert.equal('かぎぐげご'.hasDakuten(), true);
+
+        assert.equal('ガギグゲゴ'.hasDakuten(), true);
+        assert.equal('gagigugego'.hasDakuten(), true);
+    });
+
+
+    it('toHandakuten', function() {
+        // 
+        assert.equal('はひふへほ'.toHandakuten(), 'ぱぴぷぺぽ');
+        assert.equal('はひふぺほ'.toHandakuten(), 'ぱぴぷぺぽ');
+        assert.equal('ぱ'.toHandakuten(), 'ぱ');
+        assert.equal('かぎぐげご'.toHandakuten(), 'かぎぐげご');
+        assert.equal('papipupepo'.toHandakuten(), 'papipupepo');
+        assert.equal('haruhu'.toHandakuten(), 'parupu');
+    });
+
+    it('isHandakuten', function() {
+        // 
+        assert.equal('はひふへほ'.isHandakuten(), false);
+        assert.equal('はひふぺほ'.isHandakuten(), false);
+        assert.equal('ぱ'.isHandakuten(), true);
+        assert.equal('かぎぐげご'.isHandakuten(), false);
+        assert.equal('papipupepo'.isHandakuten(), true);
+        assert.equal('papiko'.isHandakuten(), false);
+    });
+
+    it('hasHandakuten', function() {
+        // 
+        assert.equal('はひふへほ'.hasHandakuten(), false);
+        assert.equal('はひふぺほ'.hasHandakuten(), true);
+        assert.equal('ぱ'.hasHandakuten(), true);
+        assert.equal('かぎぐげご'.hasHandakuten(), false);
+        assert.equal('papipupepo'.hasHandakuten(), true);
+        assert.equal('papiko'.hasHandakuten(), true);
     });
 });

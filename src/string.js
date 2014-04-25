@@ -9,7 +9,7 @@
 		Object.defineProperty(obj.prototype, name, {
 			value: fn,
 			enumerable: false,
-		})
+		});
 	};
 
 	defineMemberMothod(String, "toKanaArray", function() {
@@ -18,17 +18,23 @@
 		for (var i=0,len=this.length; i<len; ++i) {
 			var ch = this[i];
 
-			if (/[a-zA-Z]/.test(ch) === true) {
-				if (ch == 'n') {
-					var n = this[i+1];
-					if (n && /[aiueon]/.test(n) === true) {
-						ch += this[++i];
+			if (/[a-zA-Z]/.test(ch) === true && /[aiueo]/.test(ch) === false) {
+				for (var j=i+1; j<len; ++j) {
+					var ch2 = this[j];
+
+					if (/[a-zA-Z]/.test(ch2) === false) {
+						break;
+					}
+
+					ch += ch2;
+					++i;
+
+					if (/[aiueo]/.test(ch2) === true || ch == 'nn') {
+						break;
 					}
 				}
-				else if (/[aiueo]/.test(ch) === false) {
-					ch += this[++i];
-				}
 			}
+
 			arr.push(ch);
 		}
 
@@ -36,119 +42,58 @@
 	});
 
 	defineMemberMothod(String, "toHiragana", function() {
-
-		var hiragana = '';
-
-		for (var i=0,len=this.length; i<len; ++i) {
-			var ch = this[i];
-			if (/[a-zA-Z]/.test(ch) == true) {
-				if (ch == 'n') {
-					var n = this[i+1];
-					if (n == undefined) {
-						hiragana += 'ん';
-						continue ;
-					}
-					else {
-						ch += this[++i];
-					}
-				}
-				else if (/[aiueo]/.test(ch) == false) {
-					ch += this[++i];
-				}
-			}
-
-			if (ja.TO_HIRAGANA[ch]) {
-				hiragana += ja.TO_HIRAGANA[ch];
-			}
-			else {
-				hiragana += ch;
-			}
-		}
-
-		return hiragana;
+		return this.toKanaArray().map(function(ch) {
+			return ja.TO_HIRAGANA[ch] || ch;
+		}).join('');
 	});
 
 	defineMemberMothod(String, "toKatakana", function() {
-		var katakana = '';
+		return this.toKanaArray().map(function(ch) {
+			return ja.TO_KATAKANA[ch] || ch;
+		}).join('');
+	});
 
-		for (var i=0,len=this.length; i<len; ++i) {
-			var ch = this[i];
-			if (/[a-zA-Z]/.test(ch) == true) {
-				if (ch == 'n') {
-					var n = this[i+1];
-					if (n == undefined) {
-						katakana += 'ン';
-						continue ;
-					}
-					else {
-						ch += this[++i];
-					}
-				}
-				else if (/[aiueo]/.test(ch) == false) {
-					ch += this[++i];
-				}
-			}
-
-			if (ja.TO_KATAKANA[ch]) {
-				katakana += ja.TO_KATAKANA[ch];
-			}
-			else {
-				katakana += ch;
-			}
-		}
-
-		return katakana;
+	defineMemberMothod(String, "toDakuten", function() {
+		// TODO:
+		console.assert(false, 'do not defined');
 	});
 
 	defineMemberMothod(String, "isDakuten", function() {
-		for (var i=0,len=this.length; i<len; ++i) {
-			var ch = this[i];
-			if (/[a-zA-Z]/.test(ch) == true) {
-
-			}
-			if (ja.DAKUTEN[ch] === undefined) return false;
-		}
-
-		return true;
+		return this.toKanaArray().every(function(ch) {
+			return ja.DAKUTEN.indexOf(ch) != -1;
+		});
 	});
+
 	defineMemberMothod(String, "hasDakuten", function() {
-		for (var i=0,len=this.length; i<len; ++i) {
-			var ch = this[i];
-			if (ja.DAKUTEN[ch] !== undefined) return true;
-		}
-
-		return false;
+		return this.toKanaArray().some(function(ch) {
+			return ja.DAKUTEN.indexOf(ch) != -1;
+		});
 	});
 
+	defineMemberMothod(String, "toHandakuten", function() {
+		return this.toKanaArray().map(function(ch) {
+			return ja.TO_HANDAKUTEN[ch] || ch;
+		}).join('');
+	});
 
 	defineMemberMothod(String, "isHandakuten", function() {
-		for (var i=0,len=this.length; i<len; ++i) {
-			var ch = this[i];
-			if (ja.HANDAKUTEN[ch] === undefined) return false;
-		}
-
-		return true;
+		return this.toKanaArray().every(function(ch) {
+			return ja.HANDAKUTEN.indexOf(ch) != -1;
+		});
 	});
+
 	defineMemberMothod(String, "hasHandakuten", function() {
-		for (var i=0,len=this.length; i<len; ++i) {
-			var ch = this[i];
-			if (ja.HANDAKUTEN[ch] !== undefined) return true;
-		}
-
-		return false;
+		return this.toKanaArray().some(function(ch) {
+			return ja.HANDAKUTEN.indexOf(ch) != -1;
+		});
 	});
-
 
 
 	// TODO
 	/*
-	toDakuten
-	toHandakuten
-	
 	isKatakana
 	isHiragana
 	isRoman
-
 	*/
 
 
